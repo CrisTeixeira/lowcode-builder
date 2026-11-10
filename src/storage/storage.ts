@@ -23,7 +23,12 @@ export function save(doc: AppDoc): boolean {
 }
 
 export function downloadJson(doc: AppDoc, filename: string) {
-  const blob = new Blob([JSON.stringify(doc, null, 2)], { type: 'application/json' })
+  downloadFile(JSON.stringify(doc, null, 2), filename, 'application/json')
+}
+
+/** Makes the browser download `content` as a file. */
+export function downloadFile(content: string, filename: string, type: string) {
+  const blob = new Blob([content], { type })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url

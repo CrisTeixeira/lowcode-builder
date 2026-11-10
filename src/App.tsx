@@ -8,7 +8,7 @@ import { PropertiesPanel } from './editor/PropertiesPanel'
 import { createEmptyDoc, makeIdMap } from './model/document'
 import { createInitialState, editorReducer } from './model/reducer'
 import { createStarterDoc } from './model/starter'
-import { downloadJson, loadSaved, readJsonFile, save } from './storage/storage'
+import { downloadFile, downloadJson, loadSaved, readJsonFile, save } from './storage/storage'
 
 const VIEWPORTS = [
   { id: 'desktop', label: 'Desktop', width: null },
@@ -131,6 +131,18 @@ export default function App() {
             </button>
             <button type="button" onClick={() => downloadJson(doc, `${slug}.json`)}>
               Export JSON
+            </button>
+            <button
+              type="button"
+              title="Download a standalone HTML page of this app"
+              onClick={async () => {
+                // Loaded on demand so the exporter (and react-dom/server) isn't in the main bundle.
+                const { exportHtml } = await import('./export/exportHtml')
+                downloadFile(exportHtml(doc), `${slug}.html`, 'text/html')
+                setStatus(`Exported ${slug}.html`)
+              }}
+            >
+              Export HTML
             </button>
             <input
               ref={fileInput}
