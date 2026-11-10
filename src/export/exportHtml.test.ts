@@ -52,6 +52,30 @@ describe('exportHtml', () => {
     expect(html).not.toMatch(/<link[^>]+stylesheet/)
   })
 
+  it('makes buttons with an on-click message show it', () => {
+    const html = exportHtml(createStarterDoc())
+    expect(html).toContain('data-message="Welcome to the club!"')
+    expect(html).toContain('<script>')
+    expect(html).toContain('window.alert')
+  })
+
+  it('leaves the script out when no button has a message', () => {
+    let doc = createEmptyDoc()
+    doc = insertNode(doc, createNode('Button', 'b', { message: '' }), doc.rootId, 0)
+    const html = exportHtml(doc)
+    expect(html).not.toContain('data-message')
+    expect(html).not.toContain('<script>')
+  })
+
+  it('keeps button messages out of the script and escaped', () => {
+    let doc = createEmptyDoc()
+    const message = `"></button><script>alert('x')</script>`
+    doc = insertNode(doc, createNode('Button', 'b', { message }), doc.rootId, 0)
+    const html = exportHtml(doc)
+    expect(html.match(/<script>/g)).toHaveLength(1)
+    expect(html).toContain('data-message="&quot;&gt;&lt;/button&gt;&lt;script&gt;')
+  })
+
   it('falls back to a default title', () => {
     const doc = createEmptyDoc()
     doc.nodes.root.props.title = '  '

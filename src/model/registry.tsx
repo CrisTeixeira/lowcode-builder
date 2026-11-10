@@ -241,6 +241,8 @@ export const registry: Record<ComponentType, ComponentDef> = {
           className={`lc-btn lc-btn--${variant}`}
           style={{ width: bool(p.fullWidth) ? '100%' : undefined }}
           tabIndex={mode === 'edit' ? -1 : undefined}
+          // data-message lets the exported HTML (which has no React) show the same message.
+          data-message={mode === 'preview' && message ? message : undefined}
           onClick={mode === 'preview' && message ? () => window.alert(message) : undefined}
         >
           {str(p.label)}

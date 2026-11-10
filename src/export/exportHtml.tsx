@@ -38,12 +38,22 @@ body {
   color-scheme: light;
 }`
 
+/**
+ * Shows a button's "on click" message. The script is fixed text: the message itself is read
+ * from the escaped `data-message` attribute, so user text never ends up inside the <script>.
+ */
+const BUTTON_SCRIPT = `document.addEventListener('click', function (event) {
+  var button = event.target.closest('[data-message]');
+  if (button) window.alert(button.getAttribute('data-message'));
+});`
+
 /** Turns a document into a standalone HTML page (one file, no external dependencies). */
 export function exportHtml(doc: AppDoc): string {
   const root = doc.nodes[doc.rootId]
   const rawTitle = typeof root?.props.title === 'string' ? root.props.title.trim() : ''
   const title = escapeHtml(rawTitle || 'My app')
   const body = renderToStaticMarkup(<ExportNode doc={doc} id={doc.rootId} />)
+  const script = body.includes('data-message=') ? `\n<script>\n${BUTTON_SCRIPT}\n</script>` : ''
 
   return `<!doctype html>
 <html lang="en">
@@ -58,7 +68,7 @@ ${componentCss.trim()}
 </style>
 </head>
 <body class="is-preview">
-${body}
+${body}${script}
 </body>
 </html>
 `
