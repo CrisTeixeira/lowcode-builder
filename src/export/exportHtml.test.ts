@@ -27,10 +27,11 @@ describe('exportHtml', () => {
   it('keeps the order of nested children', () => {
     let doc = createEmptyDoc()
     doc = insertNode(doc, createNode('Container', 'box'), doc.rootId, 0)
-    doc = insertNode(doc, createNode('Text', 't1', { text: 'first' }), 'box', 0)
-    doc = insertNode(doc, createNode('Text', 't2', { text: 'second' }), 'box', 1)
-    const html = exportHtml(doc)
-    expect(html.indexOf('first')).toBeLessThan(html.indexOf('second'))
+    doc = insertNode(doc, createNode('Text', 't1', { text: 'Alpha' }), 'box', 0)
+    doc = insertNode(doc, createNode('Text', 't2', { text: 'Omega' }), 'box', 1)
+    const body = exportHtml(doc).split('<body')[1]
+    expect(body.indexOf('Alpha')).toBeGreaterThan(-1)
+    expect(body.indexOf('Alpha')).toBeLessThan(body.indexOf('Omega'))
   })
 
   it('escapes user text so it cannot inject HTML', () => {
@@ -41,6 +42,14 @@ describe('exportHtml', () => {
     expect(html).not.toContain('<script>')
     expect(html).not.toContain('<img')
     expect(html).toContain('&lt;/title&gt;&lt;script&gt;')
+  })
+
+  it('includes the component styles so the file works on its own', () => {
+    const html = exportHtml(createStarterDoc())
+    expect(html).toContain('.lc-btn--primary')
+    expect(html).toContain('.lc-input input')
+    expect(html).toContain('<body class="is-preview">')
+    expect(html).not.toMatch(/<link[^>]+stylesheet/)
   })
 
   it('falls back to a default title', () => {

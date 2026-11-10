@@ -2,6 +2,8 @@ import type { ReactNode } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { registry } from '../model/registry'
 import type { AppDoc } from '../model/types'
+// `?raw` makes Vite import the file's text instead of injecting it into the page.
+import componentCss from '../model/components.css?raw'
 
 /**
  * Renders a node and its subtree with each component's own `render()` in preview mode,
@@ -29,7 +31,12 @@ export function escapeHtml(text: string): string {
 
 const BASE_CSS = `*, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
-body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }`
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: #111827;
+  background: #fff;
+  color-scheme: light;
+}`
 
 /** Turns a document into a standalone HTML page (one file, no external dependencies). */
 export function exportHtml(doc: AppDoc): string {
@@ -46,9 +53,11 @@ export function exportHtml(doc: AppDoc): string {
 <title>${title}</title>
 <style>
 ${BASE_CSS}
+
+${componentCss.trim()}
 </style>
 </head>
-<body>
+<body class="is-preview">
 ${body}
 </body>
 </html>
