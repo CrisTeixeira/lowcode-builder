@@ -13,6 +13,7 @@ Built with **React 18 + TypeScript + Vite**, with no UI or drag-and-drop librari
 - **Layers panel** showing the component tree.
 - **Undo / redo** with a history limit. Consecutive keystrokes in the same field merge into a single undo step.
 - **Preview mode** that renders the app without editor chrome, with Desktop, Tablet and Mobile widths.
+- **Export to HTML:** download the app as a single standalone `.html` file (styles and button messages included, no dependencies).
 - **Autosave** to `localStorage`, plus **JSON import/export**. Imported files are validated (unknown types, cycles, orphan nodes and children on leaf components are all rejected).
 - **Keyboard shortcuts:** `Ctrl/Cmd+Z` undo, `Ctrl/Cmd+Shift+Z` or `Ctrl+Y` redo, `Del` delete, `Ctrl/Cmd+D` duplicate, `Esc` deselect.
 
@@ -36,14 +37,17 @@ src/
     document.ts     Pure tree operations (insert, move, remove, duplicate) + validation
     reducer.ts      Editor state: undo/redo history, selection, edit merging
     starter.ts      Example document shown on first launch
+    components.css  Styles for rendered components (shared by editor and export)
   editor/
     Canvas.tsx      Edit-mode renderer, selection and drag & drop
     Palette.tsx     Component palette
     LayersPanel.tsx Tree view
     PropertiesPanel.tsx  Auto-generated forms from each component's field schema
     Preview.tsx     Preview-mode renderer
+  export/
+    exportHtml.tsx  Renders a document to a standalone HTML page
   storage/
-    storage.ts      localStorage autosave, JSON import/export
+    storage.ts      localStorage autosave, JSON import/export, file downloads
 ```
 
 ### Key design decisions
@@ -55,7 +59,8 @@ src/
 
 ## Roadmap
 
-- [ ] **Export to code:** generate a standalone HTML/CSS/JS file (and later React components) from a document.
+- [x] **Export to code:** generate a standalone HTML/CSS/JS file from a document.
+- [ ] **Export to React:** generate React components from a document.
 - [ ] **Logic & events:** visual actions on events (navigate, show/hide, set variable).
 - [ ] **App state & data binding:** variables, bind text and inputs to them, form submission.
 - [ ] **Multiple pages** with navigation.
